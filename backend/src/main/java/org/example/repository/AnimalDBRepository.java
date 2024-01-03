@@ -11,11 +11,17 @@ public class AnimalDBRepository implements Repository<Long, Animal> {
     private final String url;
     private final String user;
     private final String password;
+    private String language;
 
-    public AnimalDBRepository(String url, String user, String password) {
+    public AnimalDBRepository(String url, String user, String password, String language) {
         this.url = url;
         this.user = user;
         this.password = password;
+        this.language = language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     private Animal mapResultSetToAnimal(ResultSet resultSet) throws SQLException {
@@ -43,7 +49,9 @@ public class AnimalDBRepository implements Repository<Long, Animal> {
     @Override
     public Optional<Animal> findOne(Long aLong) {
         try (Connection connection = DriverManager.getConnection(url, user, password);
-             PreparedStatement statement = connection.prepareStatement("SELECT * FROM animal WHERE id=?");) {
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM animal " +
+                     "LEFT JOIN animal_tr ON animal_tr.animal_id = animal.id " +
+                     "WHERE animal_tr.id=?");) {
             statement.setLong(1, aLong);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -61,9 +69,12 @@ public class AnimalDBRepository implements Repository<Long, Animal> {
         Set<Animal> animals = new HashSet<>();
 
         try (Connection connection = DriverManager.getConnection(url, user, password);
-             PreparedStatement statement = connection.prepareStatement("select * from animal");
-             ResultSet resultSet = statement.executeQuery()
-        ) {
+             PreparedStatement statement = connection.prepareStatement("SELECT * FROM animal " +
+                     "LEFT JOIN animal_tr ON animal_tr.animal_id = animal.id " +
+                     "WHERE animal_tr.language=?") ) {
+
+            statement.setString(1, this.language);
+            ResultSet resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
                 Long id = resultSet.getLong("id");

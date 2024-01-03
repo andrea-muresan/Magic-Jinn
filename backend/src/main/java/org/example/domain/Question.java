@@ -25,9 +25,6 @@ public class Question extends Entity<Long>{
 
     @Override
     public String toString() {
-        return "Question{" +
-                "characteristic='" + characteristic + '\'' +
-                ", textQuestion='" + textQuestion + '\'' +
-                '}';
+        return textQuestion;
     }
 }

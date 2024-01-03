@@ -14,10 +14,10 @@ import java.util.Scanner;
 
 public class Main  {
 
-
+    private static String language = "ro";
     public static void main(String[] args) {
-        AnimalDBRepository animalRepo = new AnimalDBRepository("jdbc:postgresql://localhost:5432/magicJinn", "postgres", "postgres");
-        QuestionDBRepository questionRepo = new QuestionDBRepository("jdbc:postgresql://localhost:5432/magicJinn", "postgres", "postgres");
+        AnimalDBRepository animalRepo = new AnimalDBRepository("jdbc:postgresql://localhost:5432/magicJinn", "postgres", "postgres", language);
+        QuestionDBRepository questionRepo = new QuestionDBRepository("jdbc:postgresql://localhost:5432/magicJinn", "postgres", "postgres", language);
         Service service = new Service(animalRepo, questionRepo);
 
         Scanner scanner = new Scanner(System.in);
@@ -27,10 +27,12 @@ public class Main  {
         List<Question> possibleQuestions = service.getQuestions();
 
 
-        while (possibleAnimals.size() != 1 && !possibleQuestions.isEmpty()) {
+        while (possibleAnimals.size() > 1 && !possibleQuestions.isEmpty()) {
             int index = random.nextInt(possibleQuestions.size());
             System.out.println(possibleQuestions.get(index));
-            if (scanner.next().equals("yes")) {
+
+            String yes_no = scanner.next();
+            if (yes_no.equals("yes") || yes_no.equals("da")) {
                 if (Objects.equals(possibleQuestions.get(index).getCharacteristic(), "can_fly")) {
                     MyFunction canFly = (animal, answer) -> !animal.getCanFly().equals(answer);
                     service.deleteList(canFly, possibleAnimals, possibleQuestions.get(index).getAnswer());
@@ -53,6 +55,7 @@ public class Main  {
 
         if(!possibleAnimals.isEmpty())
             System.out.println(possibleAnimals.get(0));
+        else System.out.println(":(((");
 
     }
 
