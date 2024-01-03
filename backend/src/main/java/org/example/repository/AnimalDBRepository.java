@@ -21,15 +21,14 @@ public class AnimalDBRepository implements Repository<Long, Animal> {
     private Animal mapResultSetToAnimal(ResultSet resultSet) throws SQLException {
         Long id = resultSet.getLong("id");
         String name = resultSet.getString("name");
-        boolean canSwim = resultSet.getBoolean("can_swim");
-        boolean canFly = resultSet.getBoolean("can_fly");
-        boolean isDomestic = resultSet.getBoolean("is_domestic");
-        int numberOfFeet = resultSet.getInt("number_of_feet");
+        String canSwim = resultSet.getString("can_swim");
+        String canFly = resultSet.getString("can_fly");
+        String isDomestic = resultSet.getString("is_domestic");
+        String numberOfFeet = resultSet.getString("number_of_feet");
         String size = resultSet.getString("size");
         String habitat = resultSet.getString("habitat");
         String diet = resultSet.getString("diet");
         String distinctiveFeature = resultSet.getString("distinctive_feature");
-        String lifespan = resultSet.getString("lifespan");
         String socialBehavior = resultSet.getString("social_behavior");
         String predatorOrPrey = resultSet.getString("predator_or_prey");
         String nocturnalDiurnal = resultSet.getString("nocturnal_diurnal");
@@ -38,7 +37,7 @@ public class AnimalDBRepository implements Repository<Long, Animal> {
 
         // Create and return an animal object
         return new Animal(name, canSwim,canFly, isDomestic, numberOfFeet, size, habitat, diet,
-                distinctiveFeature, lifespan, socialBehavior, predatorOrPrey, nocturnalDiurnal, specialAbility, speed);
+                distinctiveFeature, socialBehavior, predatorOrPrey, nocturnalDiurnal, specialAbility, speed);
     }
 
     @Override

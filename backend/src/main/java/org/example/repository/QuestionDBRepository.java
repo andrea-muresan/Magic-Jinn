@@ -22,9 +22,10 @@ public class QuestionDBRepository implements Repository<Long, Question> {
     private Question mapResultSetToQuestion(ResultSet resultSet) throws SQLException {
         String characteristic =  resultSet.getString("characteristic");
         String questionText =  resultSet.getString("question_text");
+        String answer =  resultSet.getString("answer");
 
-        // Create and return an question object
-        return new Question(characteristic, questionText);
+        // Create and return a question object
+        return new Question(characteristic, questionText, answer);
     }
 
     @Override

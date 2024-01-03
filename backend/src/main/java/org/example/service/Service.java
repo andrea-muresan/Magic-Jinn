@@ -32,4 +32,13 @@ public class Service implements ServiceInterface{
         questionRepo.findAll().forEach(questions::add);
         return questions;
     }
+    public void deleteList(MyFunction func, List<Animal> currentAnimals, String answer) {
+        // func.apply();
+        for (int i = 0; i < currentAnimals.size(); i++) {
+            if (func.apply(currentAnimals.get(i), answer)) {
+                currentAnimals.remove(i);
+                i--;
+            }
+        }
+    }
 }
