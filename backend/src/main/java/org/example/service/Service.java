@@ -33,10 +33,18 @@ public class Service implements ServiceInterface{
         return questions;
     }
     public void deleteList(MyFunction func, List<Animal> currentAnimals, String answer) {
-        // func.apply();
         for (int i = 0; i < currentAnimals.size(); i++) {
             if (func.apply(currentAnimals.get(i), answer)) {
                 currentAnimals.remove(i);
+                i--;
+            }
+        }
+    }
+
+    public void deleteQuestionsCharacteristic(List<Question> currentQuestions, String characteristic) {
+        for (int i = 0; i < currentQuestions.size(); i++) {
+            if (currentQuestions.get(i).getCharacteristic().equals(characteristic)) {
+                currentQuestions.remove(i);
                 i--;
             }
         }
