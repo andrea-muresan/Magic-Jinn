@@ -7,10 +7,7 @@ import org.example.repository.QuestionDBRepository;
 import org.example.service.MyFunction;
 import org.example.service.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main  {
 
@@ -26,12 +23,13 @@ public class Main  {
 
         while (true) {
             List<Animal> possibleAnimals = service.getAnimals();
-            List<Question> possibleQuestions = service.getQuestions();
+            Map<String, List<Question>> possibleQuestions = service.getQuestions();
 
 
             while (possibleAnimals.size() > 1 && !possibleQuestions.isEmpty()) {
                 int index = random.nextInt(possibleQuestions.size());
-                Question question = possibleQuestions.get(index);
+                String characteristic = possibleQuestions.keySet().toArray()[index].toString();
+                Question question = possibleQuestions.get(characteristic).get(0);
                 System.out.println(question);
 
                 String yes_no = scanner.next();
@@ -79,7 +77,10 @@ public class Main  {
                         service.deleteList(isDomestic, possibleAnimals, question.getAnswer());
                     }
 
-                    possibleQuestions.remove(index);
+                    service.deleteCharacteristicFirstQuestion(possibleQuestions, characteristic);
+                    if (possibleQuestions.containsKey(characteristic) && possibleQuestions.get(characteristic).size() == 1) {
+                        service.deleteQuestionsCharacteristic(possibleQuestions, characteristic);
+                    }
                 } else {
                     System.out.println("Nu am inteles");
                 }

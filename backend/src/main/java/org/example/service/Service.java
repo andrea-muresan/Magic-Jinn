@@ -5,12 +5,9 @@ import org.example.domain.Question;
 import org.example.repository.AnimalDBRepository;
 import org.example.repository.QuestionDBRepository;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-public class Service implements ServiceInterface{
+public class Service implements ServiceInterface {
     protected AnimalDBRepository animalRepo;
     protected QuestionDBRepository questionRepo;
 
@@ -27,11 +24,22 @@ public class Service implements ServiceInterface{
     }
 
     @Override
-    public List<Question> getQuestions() {
-        List<Question> questions = new ArrayList<>();
-        questionRepo.findAll().forEach(questions::add);
-        return questions;
+    public Map<String, List<Question>> getQuestions() {
+        Map<String, List<Question>> multiMapQuestions = new HashMap<>();
+
+        questionRepo.findAll().forEach((question) -> {
+                    multiMapQuestions.computeIfPresent(question.getCharacteristic(), (k, v) -> {
+                        v.add(question);
+                        return v;
+                    });
+                    multiMapQuestions.computeIfAbsent(question.getCharacteristic(), k -> new ArrayList<>(Collections.singletonList(question)));
+                }
+        );
+
+
+        return multiMapQuestions;
     }
+
     public void deleteList(MyFunction func, List<Animal> currentAnimals, String answer) {
         for (int i = 0; i < currentAnimals.size(); i++) {
             if (func.apply(currentAnimals.get(i), answer)) {
@@ -41,12 +49,20 @@ public class Service implements ServiceInterface{
         }
     }
 
-    public void deleteQuestionsCharacteristic(List<Question> currentQuestions, String characteristic) {
-        for (int i = 0; i < currentQuestions.size(); i++) {
-            if (currentQuestions.get(i).getCharacteristic().equals(characteristic)) {
-                currentQuestions.remove(i);
-                i--;
-            }
+    public void deleteQuestionsCharacteristic(Map<String, List<Question>> currentQuestions, String key) {
+        currentQuestions.remove(key);
+    }
+
+    public void deleteCharacteristicFirstQuestion(Map<String, List<Question>> currentQuestions, String key) {
+        if (currentQuestions.get(key).size() == 1) {
+            currentQuestions.remove(key);
+        } else {
+            currentQuestions.computeIfPresent(key, (k, v) -> {
+                v.remove(0);
+                return v;
+            });
         }
     }
+
+
 }
